@@ -11,6 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.IntegerStringConverter;
 import sample.Entities.*;
+import sample.Utility.FillDatabase;
 import sample.remotes.*;
 
 import java.io.IOException;
@@ -125,26 +126,25 @@ public class Controller implements Initializable {
         konkurencja.setIdKonkurencja(4);
         konkurencja.setStyl("zabka");
         konkurencjaRemote.create(konkurencja);
-        Zawody zawody=new Zawody();
-        zawody.setIloscBiegow(12);
-        zawody.setIdZawody(2);
-        zawody.setData(new Date(2000000));
-        zawodyRemote.create(zawody);
-        List<Zawody> zawodyList= zawodyRemote.get();
-        if(zawodyList!=null&&!zawodyList.isEmpty()) {
-            zawodyTable.getItems().setAll(zawodyList);
-        }
+        FillDatabase fillDatabase=new FillDatabase();
+        fillDatabase.fill();
         getKonkurencja();
+        getBiegi();
+        getZawodnicy();
     }
 
 
     public void addKonkurencja(ActionEvent event) throws IOException{
+        try{
         Konkurencja konkurencja=new Konkurencja();
         konkurencja.setIdKonkurencja(Integer.parseInt(konkurencja0.getText()));
         konkurencja.setStyl(konkurencja1.getText());
         konkurencja.setDystans(Integer.parseInt(konkurencja2.getText()));
         konkurencjaRemote.create(konkurencja);
         getKonkurencja();
+        }catch (Exception e){
+
+        }
     }
     public void deleteKonkurencja(ActionEvent event) throws IOException{
         ObservableList<Konkurencja> selected,all;
@@ -174,18 +174,22 @@ public class Controller implements Initializable {
     }
 
     public void addBieg(ActionEvent actionEvent) {
-        Biegi biegi=new Biegi();
-        biegi.setIdBiegu(Integer.parseInt(bieg0.getText()));
-        biegi.setPlec(bieg1.getText());
-        biegi.setPrzedzialWiekowy(bieg2.getText());
-        if(bieg3.getText()!=null)
-            if(!bieg3.getText().isEmpty())
-        biegi.setKonkurencjaIdKonkurencja(Integer.parseInt(bieg3.getText()));
-        if(bieg4.getText()!=null)
-            if(!bieg4.getText().isEmpty())
-        biegi.setZawodyIdZawody(Integer.parseInt(bieg4.getText()));
-        biegRemote.create(biegi);
-        getBiegi();
+        try {
+            Biegi biegi = new Biegi();
+            biegi.setIdBiegu(Integer.parseInt(bieg0.getText()));
+            biegi.setPlec(bieg1.getText());
+            biegi.setPrzedzialWiekowy(bieg2.getText());
+            if (bieg3.getText() != null)
+                if (!bieg3.getText().isEmpty())
+                    biegi.setKonkurencjaIdKonkurencja(Integer.parseInt(bieg3.getText()));
+            if (bieg4.getText() != null)
+                if (!bieg4.getText().isEmpty())
+                    biegi.setZawodyIdZawody(Integer.parseInt(bieg4.getText()));
+            biegRemote.create(biegi);
+            getBiegi();
+        }catch (Exception e){
+
+        }
     }
     public void deleteBieg(ActionEvent event) throws IOException{
         List<Biegi> selected;
@@ -277,14 +281,18 @@ public class Controller implements Initializable {
     }
 
     public void addZawodnicy(ActionEvent actionEvent) {
-        Zawodnicy zawodnicy=new Zawodnicy();
-        zawodnicy.setIdZawodnika(Integer.parseInt(zawodnicy1.getText()));
-        zawodnicy.setImie(zawodnicy11.getText());
-        zawodnicy.setNazwisko(zawodnicy111.getText());
-        zawodnicy.setWiek(Integer.parseInt(zawodnicy1111.getText()));
-        zawodnicy.setPlec(zawodnicy11111.getText());
-        zawodnicyRemote.create(zawodnicy);
-        getZawodnicy();
+        try {
+            Zawodnicy zawodnicy = new Zawodnicy();
+            zawodnicy.setIdZawodnika(Integer.parseInt(zawodnicy1.getText()));
+            zawodnicy.setImie(zawodnicy11.getText());
+            zawodnicy.setNazwisko(zawodnicy111.getText());
+            zawodnicy.setWiek(Integer.parseInt(zawodnicy1111.getText()));
+            zawodnicy.setPlec(zawodnicy11111.getText());
+            zawodnicyRemote.create(zawodnicy);
+            getZawodnicy();
+        }catch(Exception e){
+
+        }
     }
     public void deleteZawodnicy(ActionEvent event) throws IOException{
         List<Zawodnicy> selected;
