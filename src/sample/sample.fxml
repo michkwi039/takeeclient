@@ -117,7 +117,10 @@
                            </columns>
                         </TableView>
                         <Button layoutX="481.0" layoutY="321.0" mnemonicParsing="false" text="Usun" />
-                        <Button layoutX="479.0" layoutY="287.0" mnemonicParsing="false" text="Dodaj" />
+                        <Button layoutX="479.0" layoutY="287.0" mnemonicParsing="false" onAction="#addZawody" text="Dodaj" />
+                        <TextField fx:id="zawody1" layoutX="14.0" layoutY="287.0" prefHeight="25.0" prefWidth="70.0" promptText="ID" />
+                        <TextField fx:id="zawody2" layoutX="84.0" layoutY="287.0" prefHeight="25.0" prefWidth="70.0" promptText="Ilosc biegów" />
+                        <TextField fx:id="zawody3" layoutX="154.0" layoutY="287.0" prefHeight="25.0" prefWidth="118.0" promptText="Date: yyyy-mm-dd" />
                      </children>
                   </AnchorPane>
                </content>

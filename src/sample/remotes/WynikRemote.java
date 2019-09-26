@@ -1,5 +1,6 @@
 package sample.remotes;
 
+import sample.Entities.Containers.WynikiList;
 import sample.Entities.Wyniki;
 import sample.HttpHelper;
 
@@ -27,7 +28,9 @@ public class WynikRemote implements Remot<Wyniki> {
 
     @Override
     public List<Wyniki> get() {
-        return null;
+        String txt = HttpHelper.doGet(url);
+        WynikiList wynikiList = JAXB.unmarshal(new StringReader(txt), WynikiList.class);
+        return wynikiList.getList();
     }
 
     @Override

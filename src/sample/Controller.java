@@ -48,15 +48,16 @@ public class Controller implements Initializable {
     public TableColumn column32;
     public TableColumn column42;
     public TableColumn column121;
-    public TextField bieg0,bieg1,bieg2,bieg3,bieg4;
-    public TextField konkurencja0,konkurencja1,konkurencja2;
-    public TextField wyniki0,wyniki01,wyniki011,wyniki0111,wyniki01111;
-    public TextField zawodnicy1,zawodnicy11,zawodnicy111,zawodnicy1111,zawodnicy11111;
-    public ZawodyRemote zawodyRemote=new ZawodyRemote();
-    public KonkurencjaRemote konkurencjaRemote=new KonkurencjaRemote();
-    public BiegRemote biegRemote=new BiegRemote();
-    public ZawodnicyRemote zawodnicyRemote=new ZawodnicyRemote();
-    public WynikRemote wynikRemote=new WynikRemote();
+    public TextField bieg0, bieg1, bieg2, bieg3, bieg4;
+    public TextField konkurencja0, konkurencja1, konkurencja2;
+    public TextField wyniki0, wyniki01, wyniki011, wyniki0111, wyniki01111;
+    public TextField zawodnicy1, zawodnicy11, zawodnicy111, zawodnicy1111, zawodnicy11111;
+    public TextField zawody1, zawody2, zawody3;
+    public ZawodyRemote zawodyRemote = new ZawodyRemote();
+    public KonkurencjaRemote konkurencjaRemote = new KonkurencjaRemote();
+    public BiegRemote biegRemote = new BiegRemote();
+    public ZawodnicyRemote zawodnicyRemote = new ZawodnicyRemote();
+    public WynikRemote wynikRemote = new WynikRemote();
     public TableColumn IDKonkurencjiColumn;
     public TableColumn stylColumn;
     public TableColumn dystansColumn;
@@ -96,15 +97,15 @@ public class Controller implements Initializable {
                 new PropertyValueFactory<Zawody, String>("idWyniki"));
         column21.setCellValueFactory(
                 new PropertyValueFactory<Zawody, Time>("czas"));
-        column31.setCellValueFactory(
+        column41.setCellValueFactory(
                 new PropertyValueFactory<Zawody, String>("zawodnicyIdZawodnika"));
-        column31.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        column41.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         column111.setCellValueFactory(
                 new PropertyValueFactory<Zawody, String>("biegiIdBiegu"));
         column111.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        column41.setCellValueFactory(
+        column31.setCellValueFactory(
                 new PropertyValueFactory<Zawody, String>("idZwyciezcy"));
-        column41.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        column31.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         column12.setCellValueFactory(
                 new PropertyValueFactory<Zawody, String>("idZawodnika"));
         column22.setCellValueFactory(
@@ -121,54 +122,60 @@ public class Controller implements Initializable {
         column121.setCellFactory(TextFieldTableCell.forTableColumn());
 
 
-        Konkurencja konkurencja =new Konkurencja();
+        Konkurencja konkurencja = new Konkurencja();
         konkurencja.setDystans(200);
         konkurencja.setIdKonkurencja(4);
         konkurencja.setStyl("zabka");
         konkurencjaRemote.create(konkurencja);
-        FillDatabase fillDatabase=new FillDatabase();
+        FillDatabase fillDatabase = new FillDatabase();
         fillDatabase.fill();
         getKonkurencja();
         getBiegi();
         getZawodnicy();
+        getWyniki();
+        getZawody();
     }
 
 
-    public void addKonkurencja(ActionEvent event) throws IOException{
-        try{
-        Konkurencja konkurencja=new Konkurencja();
-        konkurencja.setIdKonkurencja(Integer.parseInt(konkurencja0.getText()));
-        konkurencja.setStyl(konkurencja1.getText());
-        konkurencja.setDystans(Integer.parseInt(konkurencja2.getText()));
-        konkurencjaRemote.create(konkurencja);
-        getKonkurencja();
-        }catch (Exception e){
+    public void addKonkurencja(ActionEvent event) throws IOException {
+        try {
+            Konkurencja konkurencja = new Konkurencja();
+            konkurencja.setIdKonkurencja(Integer.parseInt(konkurencja0.getText()));
+            konkurencja.setStyl(konkurencja1.getText());
+            konkurencja.setDystans(Integer.parseInt(konkurencja2.getText()));
+            konkurencjaRemote.create(konkurencja);
+            getKonkurencja();
+        } catch (Exception e) {
 
         }
     }
-    public void deleteKonkurencja(ActionEvent event) throws IOException{
-        ObservableList<Konkurencja> selected,all;
-        all=konkurencjeTable.getItems();
-        selected=konkurencjeTable.getSelectionModel().getSelectedItems();
+
+    public void deleteKonkurencja(ActionEvent event) throws IOException {
+        ObservableList<Konkurencja> selected, all;
+        all = konkurencjeTable.getItems();
+        selected = konkurencjeTable.getSelectionModel().getSelectedItems();
         konkurencjaRemote.delete(selected.get(0).getIdKonkurencja());
         getKonkurencja();
     }
-    public void getKonkurencja(){
-        List<Konkurencja> konkurencjaList= konkurencjaRemote.get();
-        if(konkurencjaList!=null&&!konkurencjaList.isEmpty()) {
+
+    public void getKonkurencja() {
+        List<Konkurencja> konkurencjaList = konkurencjaRemote.get();
+        if (konkurencjaList != null && !konkurencjaList.isEmpty()) {
             konkurencjeTable.getItems().setAll(konkurencjaList);
         }
     }
-    public void onEditStyl(TableColumn.CellEditEvent<Konkurencja,String> cellEditEvent) {
-        Konkurencja konkurencja= konkurencjeTable.getSelectionModel().getSelectedItem();
+
+    public void onEditStyl(TableColumn.CellEditEvent<Konkurencja, String> cellEditEvent) {
+        Konkurencja konkurencja = konkurencjeTable.getSelectionModel().getSelectedItem();
         konkurencja.setStyl(cellEditEvent.getNewValue());
         konkurencjaRemote.update(konkurencja);
         getKonkurencja();
     }
-    public void onEditDystans(TableColumn.CellEditEvent<Konkurencja,Integer> cellEditEvent) {
-        Konkurencja konkurencja= konkurencjeTable.getSelectionModel().getSelectedItem();
 
-        konkurencja.setDystans( cellEditEvent.getNewValue());
+    public void onEditDystans(TableColumn.CellEditEvent<Konkurencja, Integer> cellEditEvent) {
+        Konkurencja konkurencja = konkurencjeTable.getSelectionModel().getSelectedItem();
+
+        konkurencja.setDystans(cellEditEvent.getNewValue());
         konkurencjaRemote.update(konkurencja);
         getKonkurencja();
     }
@@ -187,42 +194,48 @@ public class Controller implements Initializable {
                     biegi.setZawodyIdZawody(Integer.parseInt(bieg4.getText()));
             biegRemote.create(biegi);
             getBiegi();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
-    public void deleteBieg(ActionEvent event) throws IOException{
+
+    public void deleteBieg(ActionEvent event) throws IOException {
         List<Biegi> selected;
-        selected=biegiTable.getSelectionModel().getSelectedItems();
+        selected = biegiTable.getSelectionModel().getSelectedItems();
         biegRemote.delete(selected.get(0).getIdBiegu());
         getBiegi();
     }
-    public void getBiegi(){
-        List<Biegi> biegiList= biegRemote.get();
-        if(biegiList!=null&&!biegiList.isEmpty()) {
+
+    public void getBiegi() {
+        List<Biegi> biegiList = biegRemote.get();
+        if (biegiList != null && !biegiList.isEmpty()) {
             biegiTable.getItems().setAll(biegiList);
         }
     }
-    public void onEditPlec(TableColumn.CellEditEvent<Konkurencja,String> cellEditEvent) {
-        Biegi biegi= biegiTable.getSelectionModel().getSelectedItem();
+
+    public void onEditPlec(TableColumn.CellEditEvent<Konkurencja, String> cellEditEvent) {
+        Biegi biegi = biegiTable.getSelectionModel().getSelectedItem();
         biegi.setPlec(cellEditEvent.getNewValue());
         biegRemote.update(biegi);
         getBiegi();
     }
-    public void onEditPrzedzial(TableColumn.CellEditEvent<Konkurencja,String> cellEditEvent) {
-        Biegi biegi= biegiTable.getSelectionModel().getSelectedItem();
+
+    public void onEditPrzedzial(TableColumn.CellEditEvent<Konkurencja, String> cellEditEvent) {
+        Biegi biegi = biegiTable.getSelectionModel().getSelectedItem();
         biegi.setPrzedzialWiekowy(cellEditEvent.getNewValue());
         biegRemote.update(biegi);
         getBiegi();
     }
-    public void onEditIdZawody(TableColumn.CellEditEvent<Konkurencja,Integer> cellEditEvent) {
-        Biegi biegi= biegiTable.getSelectionModel().getSelectedItem();
+
+    public void onEditIdZawody(TableColumn.CellEditEvent<Konkurencja, Integer> cellEditEvent) {
+        Biegi biegi = biegiTable.getSelectionModel().getSelectedItem();
         biegi.setZawodyIdZawody(cellEditEvent.getNewValue());
         biegRemote.update(biegi);
         getBiegi();
     }
-    public void onEditIdKonkurencja(TableColumn.CellEditEvent<Konkurencja,Integer> cellEditEvent) {
-        Biegi biegi= biegiTable.getSelectionModel().getSelectedItem();
+
+    public void onEditIdKonkurencja(TableColumn.CellEditEvent<Konkurencja, Integer> cellEditEvent) {
+        Biegi biegi = biegiTable.getSelectionModel().getSelectedItem();
         biegi.setKonkurencjaIdKonkurencja(cellEditEvent.getNewValue());
         biegRemote.update(biegi);
         getBiegi();
@@ -237,44 +250,49 @@ public class Controller implements Initializable {
             long ms = sdf.parse(s).getTime();
             Time t = new Time(ms);
             wyniki.setCzas(t);
-            if(wyniki011.getText()!=null||!wyniki011.getText().isEmpty())
-            wyniki.setZawodnicyIdZawodnika(Integer.parseInt(wyniki011.getText()));
-            if(wyniki0111.getText()!=null||!wyniki0111.getText().isEmpty())
-            wyniki.setBiegiIdBiegu(Integer.parseInt(wyniki0111.getText()));
+            if (wyniki011.getText() != null || !wyniki011.getText().isEmpty())
+                wyniki.setZawodnicyIdZawodnika(Integer.parseInt(wyniki011.getText()));
+            if (wyniki0111.getText() != null || !wyniki0111.getText().isEmpty())
+                wyniki.setBiegiIdBiegu(Integer.parseInt(wyniki0111.getText()));
             wyniki.setIdZwyciezcy(Integer.parseInt(wyniki01111.getText()));
             wynikRemote.create(wyniki);
             getWyniki();
-        }catch (ParseException ex){
-            System.out.println("Kuuuurwaaaaaa");
+        } catch (ParseException ex) {
+            System.out.println("a");
         }
 
     }
-    public void deleteWyniki(ActionEvent event) throws IOException{
+
+    public void deleteWyniki(ActionEvent event) throws IOException {
         List<Wyniki> selected;
-        selected=wynikiTable.getSelectionModel().getSelectedItems();
+        selected = wynikiTable.getSelectionModel().getSelectedItems();
         wynikRemote.delete(selected.get(0).getIdWyniki());
         getWyniki();
     }
-    public void getWyniki(){
-        List<Wyniki> wynikiList= wynikRemote.get();
-        if(wynikiList!=null&&!wynikiList.isEmpty()) {
+
+    public void getWyniki() {
+        List<Wyniki> wynikiList = wynikRemote.get();
+        if (wynikiList != null && !wynikiList.isEmpty()) {
             wynikiTable.getItems().setAll(wynikiList);
         }
     }
-    public void onEditIdZwyciezcy(TableColumn.CellEditEvent<Konkurencja,Integer> cellEditEvent) {
-        Wyniki wyniki= wynikiTable.getSelectionModel().getSelectedItem();
+
+    public void onEditIdZwyciezcy(TableColumn.CellEditEvent<Konkurencja, Integer> cellEditEvent) {
+        Wyniki wyniki = wynikiTable.getSelectionModel().getSelectedItem();
         wyniki.setIdZwyciezcy(cellEditEvent.getNewValue());
         wynikRemote.update(wyniki);
         getWyniki();
     }
-    public void onEditIdBiegu(TableColumn.CellEditEvent<Konkurencja,Integer> cellEditEvent) {
-        Wyniki wyniki= wynikiTable.getSelectionModel().getSelectedItem();
+
+    public void onEditIdBiegu(TableColumn.CellEditEvent<Konkurencja, Integer> cellEditEvent) {
+        Wyniki wyniki = wynikiTable.getSelectionModel().getSelectedItem();
         wyniki.setBiegiIdBiegu(cellEditEvent.getNewValue());
         wynikRemote.update(wyniki);
         getWyniki();
     }
-    public void onEditIdZawodnika(TableColumn.CellEditEvent<Konkurencja,Integer> cellEditEvent) {
-        Wyniki wyniki= wynikiTable.getSelectionModel().getSelectedItem();
+
+    public void onEditIdZawodnika(TableColumn.CellEditEvent<Konkurencja, Integer> cellEditEvent) {
+        Wyniki wyniki = wynikiTable.getSelectionModel().getSelectedItem();
         wyniki.setZawodnicyIdZawodnika(cellEditEvent.getNewValue());
         wynikRemote.update(wyniki);
         getWyniki();
@@ -290,47 +308,73 @@ public class Controller implements Initializable {
             zawodnicy.setPlec(zawodnicy11111.getText());
             zawodnicyRemote.create(zawodnicy);
             getZawodnicy();
-        }catch(Exception e){
+        } catch (Exception e) {
 
         }
     }
-    public void deleteZawodnicy(ActionEvent event) throws IOException{
+
+    public void deleteZawodnicy(ActionEvent event) throws IOException {
         List<Zawodnicy> selected;
-        selected=zawodnicyTable.getSelectionModel().getSelectedItems();
+        selected = zawodnicyTable.getSelectionModel().getSelectedItems();
         zawodnicyRemote.delete(selected.get(0).getIdZawodnika());
         getZawodnicy();
     }
-    public void getZawodnicy(){
-        List<Zawodnicy> zawodnicyList= zawodnicyRemote.get();
-        if(zawodnicyList!=null&&!zawodnicyList.isEmpty()) {
+
+    public void getZawodnicy() {
+        List<Zawodnicy> zawodnicyList = zawodnicyRemote.get();
+        if (zawodnicyList != null && !zawodnicyList.isEmpty()) {
             zawodnicyTable.getItems().setAll(zawodnicyList);
         }
     }
-    public void onEditImie(TableColumn.CellEditEvent<Konkurencja,String> cellEditEvent) {
-        Zawodnicy zawodnicy= zawodnicyTable.getSelectionModel().getSelectedItem();
+
+    public void onEditImie(TableColumn.CellEditEvent<Konkurencja, String> cellEditEvent) {
+        Zawodnicy zawodnicy = zawodnicyTable.getSelectionModel().getSelectedItem();
         zawodnicy.setImie(cellEditEvent.getNewValue());
         zawodnicyRemote.update(zawodnicy);
         getZawodnicy();
     }
-    public void onEditNazwisko(TableColumn.CellEditEvent<Konkurencja,String> cellEditEvent) {
-        Zawodnicy zawodnicy= zawodnicyTable.getSelectionModel().getSelectedItem();
+
+    public void onEditNazwisko(TableColumn.CellEditEvent<Konkurencja, String> cellEditEvent) {
+        Zawodnicy zawodnicy = zawodnicyTable.getSelectionModel().getSelectedItem();
         zawodnicy.setNazwisko(cellEditEvent.getNewValue());
         zawodnicyRemote.update(zawodnicy);
         getZawodnicy();
     }
-    public void onEditPlecZawodnika(TableColumn.CellEditEvent<Konkurencja,String> cellEditEvent) {
-        Zawodnicy zawodnicy= zawodnicyTable.getSelectionModel().getSelectedItem();
+
+    public void onEditPlecZawodnika(TableColumn.CellEditEvent<Konkurencja, String> cellEditEvent) {
+        Zawodnicy zawodnicy = zawodnicyTable.getSelectionModel().getSelectedItem();
         zawodnicy.setPlec(cellEditEvent.getNewValue());
         zawodnicyRemote.update(zawodnicy);
         getZawodnicy();
     }
-    public void onEditWiek(TableColumn.CellEditEvent<Konkurencja,Integer> cellEditEvent) {
-        Zawodnicy zawodnicy= zawodnicyTable.getSelectionModel().getSelectedItem();
+
+    public void onEditWiek(TableColumn.CellEditEvent<Konkurencja, Integer> cellEditEvent) {
+        Zawodnicy zawodnicy = zawodnicyTable.getSelectionModel().getSelectedItem();
         zawodnicy.setWiek(cellEditEvent.getNewValue());
         zawodnicyRemote.update(zawodnicy);
         getZawodnicy();
     }
 
+    public void addZawody(ActionEvent actionEvent) {
+        try {
+            Zawody zawody = new Zawody();
+            zawody.setIdZawody(Integer.parseInt(zawody1.getText()));
+            zawody.setIloscBiegow(Integer.parseInt(zawody2.getText()));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+            long ms = sdf.parse(zawody3.getText()).getTime();
+            Date t = new Date(ms);
 
+            zawody.setData(t);
+            zawodyRemote.create(zawody);
+            getZawody();
+        } catch (Exception e) {
 
+        }
+    }
+    public void getZawody(){
+        List<Zawody> zawodyList= zawodyRemote.get();
+        if(zawodyList!=null&&!zawodyList.isEmpty()) {
+            zawodyTable.getItems().setAll(zawodyList);
+        }
+    }
 }

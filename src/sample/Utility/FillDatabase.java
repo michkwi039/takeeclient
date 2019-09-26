@@ -1,16 +1,20 @@
 package sample.Utility;
 
-import sample.Entities.Biegi;
-import sample.Entities.Konkurencja;
-import sample.Entities.Zawodnicy;
-import sample.remotes.BiegRemote;
-import sample.remotes.KonkurencjaRemote;
-import sample.remotes.ZawodnicyRemote;
+import sample.Entities.*;
+import sample.Entities.Containers.ZawodyList;
+import sample.remotes.*;
+
+import java.sql.Date;
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class FillDatabase {
     public BiegRemote biegRemote=new BiegRemote();
     public ZawodnicyRemote zawodnicyRemote=new ZawodnicyRemote();
     public KonkurencjaRemote konkurencjaRemote=new KonkurencjaRemote();
+    public WynikRemote wynikiRemote=new WynikRemote();
+    public ZawodyRemote zawodyRemote=new ZawodyRemote();
 
     public void fill(){
         Konkurencja konkurencja =new Konkurencja();
@@ -92,6 +96,42 @@ public class FillDatabase {
         biegi.setPrzedzialWiekowy("D");
         biegi.setKonkurencjaIdKonkurencja(1);
         biegRemote.create(biegi);
+
+        try {
+            Wyniki wyniki = new Wyniki();
+            wyniki.setIdWyniki(1);
+            String s = "10:05";
+            SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+            long ms = sdf.parse(s).getTime();
+            Time t = new Time(ms);
+            wyniki.setCzas(t);
+            wyniki.setZawodnicyIdZawodnika(1);
+            wyniki.setBiegiIdBiegu(1);
+            wyniki.setIdZwyciezcy(2);
+            wynikiRemote.create(wyniki);
+            wyniki.setIdWyniki(2);
+            s = "08:05";
+            ms = sdf.parse(s).getTime();
+            t = new Time(ms);
+            wyniki.setCzas(t);
+            wyniki.setZawodnicyIdZawodnika(2);
+            wyniki.setBiegiIdBiegu(1);
+            wyniki.setIdZwyciezcy(2);
+            wynikiRemote.create(wyniki);
+            Zawody zawody = new Zawody();
+            zawody.setIdZawody(1);
+            zawody.setIloscBiegow(8);
+            SimpleDateFormat sdff = new SimpleDateFormat("yyyy-mm-dd");
+            s="2019-08-12";
+            ms = sdff.parse(s).getTime();
+            Date d = new Date(ms);
+
+            zawody.setData(d);
+            zawodyRemote.create(zawody);
+
+        }catch (ParseException e){
+
+        }
 
     }
 }
